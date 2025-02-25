@@ -10,13 +10,13 @@ import time
 
 
 @torch.no_grad()
-def run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=0, add_angle_ele=0, use_normal_map=False):
+def run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=0, add_angle_ele=0, use_normal_map=False, focal_length = 1, scaling_factor = 0.65):
+    torch.use_deterministic_algorithms(True)
     bbox = mesh.get_bounding_boxes()
     bbox_min = bbox.min(dim=-1).values[0]
     bbox_max = bbox.max(dim=-1).values[0]
     bb_diff = bbox_max - bbox_min
     bbox_center = (bbox_min + bbox_max) / 2.0
-    scaling_factor = 0.65
     distance = torch.sqrt((bb_diff * bb_diff).sum())
     distance *= scaling_factor
     steps = int(math.sqrt(num_views))
@@ -28,7 +28,7 @@ def run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=0,
     rotation, translation = look_at_view_transform(
         dist=distance, azim=azimuth, elev=elevation, device=device, at=bbox_center
     )
-    camera = PerspectiveCameras(R=rotation, T=translation, device=device)
+    camera = PerspectiveCameras(R=rotation, T=translation, focal_length = focal_length, device=device)
     rasterization_settings = RasterizationSettings(
         image_size=(H, W), blur_radius=0.0, faces_per_pixel=1, bin_size=0
     )
@@ -52,19 +52,20 @@ def run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=0,
         normal_batched_renderings = normal_batch_renderer(batch_mesh)
     fragments = rasterizer(batch_mesh)
     depth = fragments.zbuf
+    torch.use_deterministic_algorithms(False)
     return batched_renderings, normal_batched_renderings, camera, depth
 
 
-def batch_render(device, mesh, mesh_vertices, num_views, H, W, use_normal_map=False):
+def batch_render(device, mesh, mesh_vertices, num_views, H, W, use_normal_map=False, focal_length = 1, scaling_factor = 0.65):
     trials = 0
     add_angle_azi = 0
     add_angle_ele = 0
     while trials < 5:
         try:
-            return run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=add_angle_azi, add_angle_ele=add_angle_ele, use_normal_map=use_normal_map)
+            return run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=add_angle_azi, add_angle_ele=add_angle_ele, use_normal_map=use_normal_map, focal_length = focal_length, scaling_factor = scaling_factor)
         except torch.linalg.LinAlgError as e:
             trials += 1
             print("lin alg exception at rendering, retrying ", trials)
-            add_angle_azi = torch.randn(1)
-            add_angle_ele = torch.randn(1)
+            add_angle_azi = 0.1#torch.randn(1)  # Make it deterministic
+            add_angle_ele = 0.1#torch.randn(1)  # Make it deterministic
             continue

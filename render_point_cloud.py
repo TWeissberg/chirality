@@ -36,18 +36,17 @@ def get_colored_depth_maps(raw_depths,H,W):
         np_image = np_image.astype('uint8')
         depth_images.append(np_image)
 
-    return depth_images
+    return torch.from_numpy(np.stack(depth_images))
 
 
 @torch.no_grad()
-def run_rendering(device, points, num_views, H, W, add_angle_azi=0, add_angle_ele=0, use_normal_map=False,return_images=False):
-    pointclouds = Pointclouds(points=[points],features=[torch.ones(points.size()).float().cuda()])
+def run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=0, add_angle_ele=0, use_normal_map=False,return_images=True, focal_length = 1, scaling_factor = 0.65):
+    pointclouds = Pointclouds(points=[mesh_vertices],features=[torch.ones(mesh_vertices.shape).float().cuda()])
     bbox = pointclouds.get_bounding_boxes()
     bbox_min = bbox.min(dim=-1).values[0]
     bbox_max = bbox.max(dim=-1).values[0]
     bb_diff = bbox_max - bbox_min
     bbox_center = (bbox_min + bbox_max) / 2.0
-    scaling_factor = 0.65
     distance = torch.sqrt((bb_diff * bb_diff).sum())
     distance *= scaling_factor
     steps = int(math.sqrt(num_views))
@@ -59,12 +58,12 @@ def run_rendering(device, points, num_views, H, W, add_angle_azi=0, add_angle_el
     rotation, translation = look_at_view_transform(
         dist=distance, azim=azimuth, elev=elevation, device=device, at=bbox_center
     )
-    camera = PerspectiveCameras(R=rotation, T=translation, device=device)
+    camera = PerspectiveCameras(R=rotation, T=translation, focal_length = focal_length, device=device)
 
     #rasterizer
     rasterization_settings = PointsRasterizationSettings(
         image_size=H,
-        radius = 0.01,
+        radius = 0.02,
         points_per_pixel = 1,
         bin_size = 0,
         max_points_per_bin = 0
@@ -84,20 +83,25 @@ def run_rendering(device, points, num_views, H, W, add_angle_azi=0, add_angle_el
     if not return_images:
         return None,None,camera,raw_depth
     else:
-        list_depth_images_np = get_colored_depth_maps(raw_depth,H,W)
-        return None,None,camera,raw_depth,list_depth_images_np
+        list_depth_images = get_colored_depth_maps(raw_depth,H,W)
+        # print(raw_depth.shape)
+        # print(list_depth_images_np[0].shape)
+        # from PIL import Image
+        # Image.fromarray(raw_depth[0, :, :, 0].cpu().numpy().astype('uint8'), mode = "L").save("depth.png")
+        # Image.fromarray(list_depth_images_np[0]).save("depth_image.png")
+        return list_depth_images,None,camera,raw_depth
 
 
-def batch_render(device, points, num_views, H, W, use_normal_map=False,return_images=False):
+def batch_render(device, mesh, mesh_vertices, num_views, H, W, use_normal_map=False,return_images=True, focal_length = 1, scaling_factor = 0.65):
     trials = 0
     add_angle_azi = 0
     add_angle_ele = 0
     while trials < 5:
         try:
-            return run_rendering(device, points, num_views, H, W, add_angle_azi=add_angle_azi, add_angle_ele=add_angle_ele, use_normal_map=use_normal_map,return_images=return_images)
+            return run_rendering(device, mesh, mesh_vertices, num_views, H, W, add_angle_azi=add_angle_azi, add_angle_ele=add_angle_ele, use_normal_map=use_normal_map,return_images=return_images, focal_length = focal_length, scaling_factor = scaling_factor)
         except torch.linalg.LinAlgError as e:
             trials += 1
             print("lin alg exception at rendering, retrying ", trials)
-            add_angle_azi = torch.randn(1)
-            add_angle_ele = torch.randn(1)
+            add_angle_azi = 0.1#torch.randn(1)  # Make it deterministic
+            add_angle_ele = 0.1#torch.randn(1)  # Make it deterministic
             continue

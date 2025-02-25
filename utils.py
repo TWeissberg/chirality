@@ -167,3 +167,28 @@ def gmm(a, b):
     correspondence_matrix = torch.norm(gram_matrix_a - gram_matrix_b, p='fro', dim=2)
 
     return correspondence_matrix
+
+
+def plot_and_save_html(V, F, assignment, name, keep = False):
+	plotter = pv.Plotter(shape=(1, 1), off_screen=True)
+	F = np.hstack([np.full((F.shape[0], 1), 3), F]).flatten()
+	mesh = pv.PolyData(V, F)
+
+	colors = plt.get_cmap("viridis") #create_colormap(assignment) # color map blue vs red per point (colors should have same shape as V) 
+
+	plotter.add_mesh(mesh, scalars=colors(assignment), lighting=True, metallic=False, smooth_shading=True)
+
+	plotter.camera_position = 'xy'
+	plotter.link_views()
+	plotter.render()
+	# path_html = "./plot.html"
+	if keep:
+		path = name + ".html"
+		plotter.export_html(path)
+		plotter.close()
+	else:
+		with tempfile.NamedTemporaryFile(suffix=".html") as temp:
+			path = str(temp.name)
+			plotter.export_html(path)
+			plotter.close()
+			wandb.log({name: wandb.Html(path)})

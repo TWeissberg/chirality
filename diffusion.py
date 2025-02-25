@@ -148,8 +148,8 @@ def run_diffusion(
         guidance_scale=7,
         eta=1,
         output_type=output_type,
-        return_image=return_image
-        # generator=generator,
+        return_image=return_image,
+        generator=generator,
     ).images
     return output
 

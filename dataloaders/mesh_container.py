@@ -79,27 +79,28 @@ class MeshContainer(object):
 
     def _load_from_file_obj(self, file_path):
         try:
-            with open(file_path, 'r') as f:
-                vertices = []
-                faces = []
-                for line in f:
-                    line = line.strip()
-                    if line == '' or line[0] == '#':
-                        continue
-                    line = line.split()
-                    if line[0] == 'v':
-                        vertices.append([float(x) for x in line[1:]])
-                    elif line[0] == 'f':
-                        faces.append([int(x.split('/')[0]) - 1 for x in line[1:]])
-            self.vert, self.face = np.asarray(vertices), np.asarray(faces)
-            self.n = self.vert.shape[0]
+            # with open(file_path, 'r') as f:
+            #     vertices = []
+            #     faces = []
+            #     for line in f:
+            #         line = line.strip()
+            #         if line == '' or line[0] == '#':
+            #             continue
+            #         line = line.split()
+            #         if line[0] == 'v':
+            #             vertices.append([float(x) for x in line[1:]])
+            #         elif line[0] == 'f':
+            #             faces.append([int(x.split('/')[0]) - 1 for x in line[1:]])
+            # self.vert, self.face = np.asarray(vertices), np.asarray(faces)
+            # self.n = self.vert.shape[0]
+            raise Exception()
         except:
             import trimesh
             mesh = trimesh.exchange.obj.load_obj(open(file_path,'rb'))
             self.vert = mesh['vertices']
             self.face = mesh['faces']
             self.n = self.vert.shape[0]
-            return
+            self.assignment = mesh["vertex_colors"][:, 2].astype(np.int32)
 
 
         # import trimesh
