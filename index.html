@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="description"
-        content="Symmetry Understanding of 3D Shapes via Chirality Disentanglement">
+        content="Symmetry Informative and Agnostic Feature Disentanglement for 3D Shapes">
   <meta name="keywords" content="Intrinsic Symmetry, Shape Analysis">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Symmetry Understanding of 3D Shapes via Chirality Disentanglement</title>
+  <title>Symmetry Informative and Agnostic Feature Disentanglement for 3D Shapes</title>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
@@ -74,12 +74,14 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Symmetry Understanding of 3D Shapes via Chirality Disentanglement</h1>
+          <h1 class="title is-1 publication-title">Symmetry Informative and Agnostic Feature Disentanglement for 3D Shapes</h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
-              <a href="https://wei-kang-wang.github.io/">Weikang Wang<sup>*</sup></a>,</span>
+              <a href="https://www.weissberg.io/">Tobias Weißberg</a>,</span>
             <span class="author-block">
-              <a href="https://www.weissberg.io/">Tobias Weißberg<sup>*</sup></a>,</span>
+              <a href="https://wei-kang-wang.github.io/">Weikang Wang</a>,</span>
+            <span class="author-block">
+              <a href="https://paulroetzer.github.io/about-me/">Paul Roetzer</a>,</span>
             <span class="author-block">
               <a href="https://nafieamrani.github.io/">Nafie El Amrani</a>,</span>
             <span class="author-block">
@@ -92,14 +94,14 @@
           </div>
 
           <div class="is-size-5 publication-authors">
-            <span class="author-block">ICCV 2025</span>
+            <span class="author-block">3DV 2026</span>
           </div>
 
           <div class="column has-text-centered">
             <div class="publication-links">
               <!-- PDF Link. -->
                 <span class="link-block">
-                <a href="https://arxiv.org/pdf/2508.05505"
+                <a href="https://tweissberg.github.io/chirality"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-file-pdf"></i>
@@ -109,7 +111,7 @@
               </span>
               <!-- Code Link. -->
               <span class="link-block">
-                <a href="https://github.com/TWeissberg/chi"
+                <a href="https://github.com/TWeissberg/chirality"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fab fa-github"></i>
@@ -143,12 +145,7 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            Chirality information (i.e. information that allows distinguishing left from right) is ubiquitous for various data modes in computer vision, including images, videos, point clouds, and meshes. While chirality has been extensively
-            studied in the image domain, its exploration in shape analysis (such as point clouds and meshes) remains underdeveloped. Although many shape vertex descriptors have shown appealing properties (e.g. robustness to rigid-body
-            transformations), they are often not able to disambiguate between left and right symmetric parts. Considering the ubiquity of chirality information in different shape analysis problems and the lack of chirality-aware features within
-            current shape descriptors, developing a chirality feature extractor becomes necessary and urgent. Based on the recent Diff3F framework, we propose an unsupervised chirality feature extraction pipeline to decorate shape
-            vertices with chirality-aware information, extracted from 2D foundation models. We evaluated the extracted chirality features through quantitative and qualitative experments across diverse datasets. Results from downstream
-            tasks including left-right disentanglement, shape matching, and part segmentation demonstrate their effectiveness and practical utility.
+            Shape descriptors, i.e. per-vertex features of 3D meshes or point clouds, are fundamental to shape analysis. Over the past decades, various handcrafted geometry-aware descriptors and feature refinement techniques have been proposed. Recently, several studies have initiated a new research direction by leveraging features from image foundation models to create semantics-aware descriptors, demonstrating advantages across tasks like shape matching, editing, and segmentation. Symmetry, another key concept in shape analysis, has also attracted increasing attention. Consequently, constructing symmetry-aware shape descriptors is a natural progression. Although a recent method successfully extracted symmetry-informative feature from semantic-aware descriptors, its features are only one-dimensional, neglecting other valuable semantic information. Besides, the extracted symmetry-informative feature is usually noisy and yields tiny miss-classified patches. To address these gaps, we propose a feature disentanglement approach which at the same time is symmetry informative and symmetry agnostic. Further, we propose a feature refinement technique to improve robustness of predicted symmetry informative features. Extensive experiments, including intrinsic symmetry detection, left/right classification, and shape matching, demonstrate the effectiveness of our proposed framework compared to various state-of-the-art methods, both qualitatively and quantitatively. We will release our code upon acceptance.
           </p>
         </div>
       </div>
@@ -164,10 +161,10 @@
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
     <pre><code>@inproceedings{wang2025symmetry,
-  title     = {Symmetry Understanding of 3D Shapes via Chirality Disentanglement},
-  author    = {Weikang Wang, Tobias Weißberg, Nafie El Amrani and Florian Bernard},
-  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
-  year      = {2025}
+  title     = {Symmetry Informative and Agnostic Feature Disentanglement for 3D Shapes},
+  author    = {Tobias Weißberg, Weikang Wang, Paul Roetzer, Nafie El Amrani and Florian Bernard},
+  booktitle = {International Conference on 3D Vision (3DV)},
+  year      = {2026}
 }</code></pre>
   </div>
 </section>
