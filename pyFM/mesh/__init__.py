@@ -1,1 +1,0 @@
-from .trimesh import TriMesh
