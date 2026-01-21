@@ -58,4 +58,23 @@ Full code and details will be released soon
 
 ## BibTeX
 
-If you find our research useful, please consider citing it.
+```shell
+@inproceedings{wang2025symmetry,
+  title     = {Symmetry Understanding of 3D Shapes via Chirality Disentanglement},
+  author    = {Weikang Wang, Tobias Weißberg, Nafie El Amrani and Florian Bernard},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  year      = {2025}
+}
+```
+
+```shell
+@inproceedings{weissberg2025symmetry,
+  title     = {Symmetry Informative and Agnostic Feature Disentanglement for 3D Shapes},
+  author    = {Tobias Wei{\ss}berg, Weikang Wang, Paul Roetzer, Nafie El Amrani and Florian Bernard},
+  booktitle = {International Conference on 3D Vision (3DV)},
+  year      = {2026},
+  note      = {to appear}
+}
+```
+
+
